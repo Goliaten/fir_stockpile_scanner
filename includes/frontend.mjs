@@ -154,26 +154,10 @@ export function addDownloadTSVListener(downloadTSV) {
       }
     }
 
-    const encoder = new TextEncoder();
-    function toBinary(string) {
-      // Expand UTF-8 characters to equivalent bytes
-      let byteString = '';
-      for (const byte of encoder.encode(string)) {
-        byteString += String.fromCharCode(byte);
-      }
-      return byteString;
-    }
-    const base64TSV = window.btoa(toBinary(items.join('\n')));
-
-    const link = document.createElement('a');
-    link.href = `data:text/tab-separated-values;base64,${base64TSV}`;
-
-    const time = new Date();
-    link.download = time.toISOString() + "_" + 'foxhole-inventory.tsv';
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://127.0.0.1:10001/tsv", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify(items));
   });
 }
 
